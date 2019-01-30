@@ -1,0 +1,89 @@
+{
+  "classifier_urls": [
+    {
+      "classifier_type": "mxnet",
+      "url": "http://localhost:5000/image/v1/mxnet/classify/url",
+      "request_format": {
+        "image": "file_path"
+      },
+      "response_key": "tags"
+    },
+    {
+      "classifier_type": "hitc",
+      "url": "http://localhost:9898/image/v1/classify/url",
+      "request_format": {
+        "image": "file_path"
+      },
+      "response_key": "viewType"
+    }
+  ],
+  "request_template": {
+    "image": [
+      "str",
+      "unicode"
+    ]
+  },
+  "response_template": {
+    "success": {
+      "data": {
+        "typx`e": "dict"
+      },
+      "status": {
+        "type": [
+          "str",
+          "unicode"
+        ],
+        "allowed": [
+          "success",
+          "SUCCESS"
+        ]
+      }
+    },
+    "fail": {
+      "ise": {
+        "errorCode": {
+          "type": [
+            "str",
+            "unicode"
+          ]
+        },
+        "errorMessage": {
+          "type": [
+            "str",
+            "unicode"
+          ]
+        },
+        "status": {
+          "type": [
+            "str",
+            "unicode"
+          ]
+        },
+        "imageId": {
+          "type": [
+            "str",
+            "unicode"
+          ],
+          "default": ""
+        }
+      },
+      "non_ise": {
+        "errorCode": {
+          "type": [
+            "str",
+            "unicode"
+          ]
+        },
+        "errorMessage": {
+          "type": [
+            "str",
+            "unicode"
+          ]
+        }
+      }
+    }
+  },
+  "images_path": "/home/ubuntu/vision-data/received_images",
+  "apikey": "5a6350e0-f384-4712-b182-aef72fc0e51d",
+  "log_file": "./wrapper.log"
+}

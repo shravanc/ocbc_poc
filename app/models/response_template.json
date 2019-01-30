@@ -1,0 +1,19 @@
+{
+  "status": {
+    "code": "",
+    "message": ""
+  },
+  "data": {
+
+  },
+  "errors": [
+    {
+      "code": "code1",
+      "message": "lorem ipsum"
+    },
+    {
+      "code": "code2",
+      "message": "lorem ipsum"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+.header-cntr {
+    border-bottom: 2px solid #47a87e;
+    width: 100%;
+    top: 0;
+    left: 0;
+    /* position: fixed; */
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: #fff;
+    /* overflow: auto; */
+}
+
+.img-logo {
+    height: 35px;
+}
+
+#page-range-container {
+    text-align: left;
+    padding-top: 15px;
+}
+
+#heading-container {
+    text-align: center;
+}
+
+#subheading {
+    margin-top: 35px;
+}
+
+.panel-body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 220px;
+    overflow-y: scroll;
+    padding: 18px
+}
+
+#result-table-body {
+    display: block;
+}
+
+.table {
+    margin-bottom: 0px;
+ }
+
+.dropdown-container {
+    text-align: left;
+    padding-top: 18px;
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Infrrd IDC</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+          charset="utf-8"/>
+    <link rel="shortcut icon" type="image/png" href="static/images/favicon.png"/>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.4/angular.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery-loading-overlay/2.1.3/loadingoverlay.min.js"></script>
+
+    <script type="text/javascript" src="static/js/app.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+<div ng-app="rbc-app" ng-controller="RBCHomeController">
+    <div class="container-fluid" style="padding-top: 10px;">
+        <div class="row">
+            <div class="col-md-2 text-center">
+                <a href="static/index.html">
+                    <img class="img-logo" src="static/images/infrrd-logo-main.png" alt="Infrrd.ai logo">
+                </a>
+            </div>
+        </div>
+        <div class="header-cntr"></div>
+    </div>
+
+    <div id="heading-container">
+        <h1>Infrrd IDC</h1>
+        <h4 id="subheading">Upload the file in PDF format to convert it into a searchable html file.</h4>
+    </div>
+    <div class="container" style="padding-top: 40px;">
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <div class="panel panel-primary" id="upload_panel_view">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">File Upload</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form id="upload-form" ng-submit="extractData()">
+                            <input required name="file" type="file" id="file-input" accept="application/pdf">
+
+                            <div class="dropdown-container">
+                                <select id="language_select" required title="Language" class="selectpicker"
+                                        data-width="150px" name="lang">
+                                    <option value="ne">Nepalese</option>
+                                    <option value="pl">Polish</option>
+                                    <option value="vi">Vietnamese</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="form-inline" id="page-range-container">
+                                <!--<label for="start-page">Start page</label>-->
+                                <input id="start-page" name="start_page" required type="number" min="1"
+                                       class="form-control" placeholder="Start page">
+                                <!--<label for="end-page">End page</label>-->
+                                <input id="end-page" name="end_page" type="number" min="1" class="form-control"
+                                       placeholder="End page">
+                            </div>
+                            <div style="padding-top: 22px;">
+                                <input class="btn btn-primary" type="submit" value="Upload">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="pages!=undefined" class="col-md-6 text-center" id="result_table" hidden>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Extracted Tables</h3>
+                    </div>
+                    <div class="panel-body" id="result-table-body">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="text-center">Pdf</th>
+                                <th class="text-center">Html</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="page in pages">
+                                <td><a ng-href="{{page.pdf_path}}" target="_blank">{{page.page_no}}.pdf</a></td>
+                                <td><a ng-href="{{page.html_path}}" target="_blank">{{page.page_no}}.html</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

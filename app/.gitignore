@@ -1,0 +1,26 @@
+.idea/*
+
+
+# Distribution / packaging
+bin/
+build/
+dist/
+lib/
+lib64/
+var/
+data-mapping/venv/
+
+
+# Unit test / coverage reports
+.coverage
+.cache
+coverage.xml
+
+__pycache__/
+*.py[cod]
+
+*.log
+venv/*
+
+uploads/*
+nohup.out
