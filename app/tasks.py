@@ -73,7 +73,7 @@ def translate_text(text, lang):
 # @timeit
 # @celery.task
 def extract_cell_data(pdf_path, pdf_text_cmd, lang, cordinates, gv):
-    print("----1111----", gv, cordinates)
+    # print("----1111----", gv, cordinates)
     try:
         
         pdf_text_process = subprocess.Popen(pdf_text_cmd, shell=True, stdout=subprocess.PIPE)
@@ -84,15 +84,15 @@ def extract_cell_data(pdf_path, pdf_text_cmd, lang, cordinates, gv):
 
         if 'LEE' in str(text):
             print("2**************TEXT***************")
-            print(pdf_text_cmd)
+            # print(pdf_text_cmd)
             print(text)
-            print(cordinates)
-            print("2**************TEXT***************")
+            # print(cordinates)
+            # print("2**************TEXT***************")
 
         logging.info(u'Actual Text: {}'.format(text))
         if lang == "en":
             vision_text = gv.test(cordinates['x'], cordinates['y'], cordinates['h'], cordinates['w'])
-            print("VISION_TEXT====>>", vision_text)
+            # print("VISION_TEXT====>>", vision_text)
             return vision_text #text.decode('utf-8')
             # return text.decode('utf-8')
         char_count = len(re.findall(r"[a-zA_Z]", text.decode("utf-8")))
@@ -169,6 +169,24 @@ def pdf_page_to_image_task(file_path,
     print("----ARGS---->", args)
     subprocess.check_output(args)
 
+def pdf_page_to_lower_dpi_image_task(file_path,
+                      output_file_path,
+                      dpi=72,
+                      jpeg_compression_quality=100, ):
+    args = [
+        "gs",
+        "-dNOPAUSE",
+        "-dBATCH",
+        "-dSAFER",
+        "-sDEVICE=jpeg",
+        f"-r{dpi}",
+        f"-sPageList={1}",
+        "-dQUIET",
+        f"-sOutputFile={output_file_path}",
+        file_path
+    ]
+
+    subprocess.check_output(args)
 
 
 def pdf_page_to_regular_image_task(file_path,

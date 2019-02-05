@@ -15,8 +15,9 @@ from service.table.structures import TableStructure, Line, Point
 TuplePoint = Tuple[int, int]
 
 
-def extract_tables(image_path: str, pdf_path: str, debug=False, debug_folder_path="") -> List[TableStructure]:
-    debug = False
+def extract_tables(image_path: str, pdf_path: str, debug=False, debug_folder_path="", vkf=None, hkf=None) -> List[TableStructure]:
+    print("extract_tables------1")
+    debug = True
     debug_folder_path = "/Users/shravanc/Desktop/exp"
     image = cv.imread(image_path)
     if image is None:
@@ -31,12 +32,19 @@ def extract_tables(image_path: str, pdf_path: str, debug=False, debug_folder_pat
     # Open with horizontal and vertical kernels to find horizontal and vertical lines respectively
     kernel_length_factor = 25
     kernel_width = 1
+    if hkf is not None:
+        kernel_length_factor = hkf
+
+    print('Horizontal Kernel_length_factor---->', hkf)
     horizontal, hor_contours = _morph_open_and_find_contours(thresholded_inverted_image,
                                                              (
                                                                  int(thresholded_inverted_image.shape[
                                                                          1] / kernel_length_factor),
                                                                  kernel_width)
                                                              )
+    if vkf is not None:
+        kernel_length_factor = vkf
+    print('vertical Kernel_length_factor---->', vkf)
     vertical, ver_contours = _morph_open_and_find_contours(thresholded_inverted_image,
                                                            (
                                                                kernel_width,

@@ -20,6 +20,7 @@ from log import configure_logger, DE_LOG_FILE_PATH
 
 
 
+
 class DataExtractorJSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Decimal):
@@ -40,6 +41,8 @@ app.config.from_object(DEConfig)
 CORS(app)
 
 api = Api(app, catch_all_404s=True)
+
+
 
 # Extract data API for Machines and Scanned PDF.
 # api.add_resource(ExtractData, "/extract/data")
@@ -84,6 +87,7 @@ def extract_data_route():
         file_location = path.join(constant.PDF_UPLOAD_DIRECTORY, f"{uuid_filename}.pdf")
         file.save(file_location)
         extract_data = extract_translated_data(uuid_filename, file_location, req_dict['start_page'], req_dict['end_page'], req_dict['lang'])
+
         return success_response(extract_data)
     except Exception as e:
         return error_response(str(e))

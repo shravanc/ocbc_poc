@@ -13,7 +13,7 @@ from utils import formulate_response
 
 from tasks import extract_cell_data
 from celery import group
-
+from enum import Enum
 
 # def create_image_from_pdf(file_location, page_folder_location, start_page, last_page):
 #     if page_folder_location is not None and file_location is not None:
@@ -34,11 +34,12 @@ def update_translated_text_to_cells(data, tables):
         results = results + d1
 
     index = 0
-    for table in tables:
+    for ti, table in enumerate(tables):
         table_cells = table.table_cells
-        for row in table_cells:
-            for col in row:
+        for ri, row in enumerate(table_cells):
+            for ci, col in enumerate(row):
                 col.text = results[index]
+                print(f"Table->{t1}, Row->{ri}, Col->{ci}, ----->Text{col.text}")
                 index += 1
 
 def construct_command(col, pdf_path):
@@ -52,21 +53,26 @@ def construct_command(col, pdf_path):
                 (col.cell.bottom_right[0]) - (col.cell.top_left[0]))) + " -H " + str(int(
                 (col.cell.bottom_right[1]) - (col.cell.top_left[1]))) + " \"" + pdf_path + "\" - "]
 
-def map_table_data_to_text(tables, pdf_path, lang, gv):
+def map_table_data_to_text(tables, pdf_path, lang, gv, prediction):
     pdf_text_cmd_list = []
     co_ordinates_list = []
     gv_list = []
     texts = []
-    print('MapTableDataToText----1')
-    for table in tables:
+    #print('MapTableDataToText----1')
+    for ti, table in enumerate(tables):
         table_cells = table.table_cells
-        for row in table_cells:
-            for col in row:
+        for ri, row in enumerate(table_cells):
+            for ci, col in enumerate(row):
                 print("PDF_TO_TEXT_COMMAND------>" )
+
                 co_ordinates, pdf_text_cmd = construct_command(col, pdf_path)
                 co_ordinates_list.append(co_ordinates)
                 pdf_text_cmd_list.append(pdf_text_cmd)
                 col.text = extract_cell_data(pdf_path, pdf_text_cmd, lang, co_ordinates, gv)
+                if ri >= 1 and ci == 0:
+                    if len(col.text) >= 1:
+                        prediction.gaurantors.append(col.text)
+                #print(f"Table->{ti}, Row->{ri}, Col->{ci}, ----->Text{col.text}")
 
     # print('MapTableDataToText----10')
     # pdf_path_list = [ pdf_path for i in range( len(pdf_text_cmd_list) ) ]
