@@ -73,6 +73,11 @@ def home_page_route():
     resp = send_from_directory("static", "index.html")
     return resp
 
+@app.route('/test', methods=['GET'])
+def home():
+    resp = send_from_directory("static", "start.html")
+    return resp
+
 
 @app.route('/extract', methods=["POST"])
 def extract_data_route():
@@ -86,11 +91,19 @@ def extract_data_route():
         uuid_filename = file_name_without_ext + "_" + str(uuid.uuid1())
         file_location = path.join(constant.PDF_UPLOAD_DIRECTORY, f"{uuid_filename}.pdf")
         file.save(file_location)
-        extract_data = extract_translated_data(uuid_filename, file_location, req_dict['start_page'], req_dict['end_page'], req_dict['lang'])
+        prediction, check_box = extract_translated_data(uuid_filename, file_location, req_dict['start_page'], req_dict['end_page'], req_dict['lang'])
 
-        return success_response(extract_data)
+        print("--->prediction--->", prediction)
+        pred = prediction.to_json()
+        for d in check_box.required_data:
+            pred[d['field']] = d['text']
+        return jsonify({'data': pred})
+        # return jsonify(check_box.response)
+        # return jsonify(prediction.to_json())
+        # return success_response(extract_data)
     except Exception as e:
         return error_response(str(e))
+
 
 
 def success_response(data):
@@ -109,23 +122,23 @@ def error_response(msg):
 
 
 def parse_extract_data_request() -> dict:
-    if 'file' not in request.files:
-        raise AssertionError("Property `file` not found in multipart")
-
-    if 'start_page' not in request.form:
-        raise AssertionError("Mandatory property `start_page` needed")
-
-    if 'end_page' not in request.form:
-        raise AssertionError("Mandatory property `end_page` needed")
-
-    if 'lang' not in request.form:
-        raise AssertionError("Mandatory property `lang` needed")
+    # if 'file' not in request.files:
+    #     raise AssertionError("Property `file` not found in multipart")
+    #
+    # if 'start_page' not in request.form:
+    #     raise AssertionError("Mandatory property `start_page` needed")
+    #
+    # if 'end_page' not in request.form:
+    #     raise AssertionError("Mandatory property `end_page` needed")
+    #
+    # if 'lang' not in request.form:
+    #     raise AssertionError("Mandatory property `lang` needed")
 
     return {
         'file': request.files['file'],
-        'start_page': request.form["start_page"],
-        'end_page': request.form["end_page"],
-        'lang': request.form["lang"]
+        'start_page': 1, #request.form["start_page"],
+        'end_page': 1, #request.form["end_page"],
+        'lang': 'en' #request.form["lang"]
     }
 
 

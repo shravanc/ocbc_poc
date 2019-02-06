@@ -97,7 +97,8 @@ def parse_scanned_doc(page_folder_location, file_location, start_page, last_page
     # pdfs = get_pdfs(start_page, last_page, file_location, pdf_pages_path)
     pdfs, imgs, r_imgs, c_imgs = get_pdfs_and_imgs(start_page, last_page, file_location, pdf_pages_path, images_path, regular_image_path, converted_image_path)
     # print("***12***")
-    # for pdf in pdfs:
+    prediction = None
+    check_box = None
     for img, pdf, r_img, c_img in zip(imgs, pdfs, r_imgs, c_imgs):
         print("***12.5***")
         basename = os.path.basename(pdf).split('.')[0]
@@ -114,52 +115,17 @@ def parse_scanned_doc(page_folder_location, file_location, start_page, last_page
                 extract_text_for_polish(pdf, basename, html_path, lang)
         else:
             print("***14***", img)
-            # gv = MyGoogleVision(r_img, 1)
-            # gv.get_visioned()
-            # gv.make_sense()
-            # prediction = fetch_fields(gv, Ocbc())
+            gv = MyGoogleVision(r_img, 1)
+            gv.get_visioned()
+            gv.make_sense()
+            prediction = fetch_fields(gv, Ocbc())
 
-            try:
-                print('--3-->', img, '---',  pdf, c_img)
-                #======================================
+            check_box = extract_tables(c_img, pdf)
 
-                r_img = '/Users/shravanc/learning_pyt/open_cv_learning/imgs/ocbc_1.DPI_73.jpg'
-                pdf = '/Users/shravanc/learning_pyt/open_cv_learning/pdfs/ocbc_1.DPI_73.pdf'
-                print('--1--', r_img, pdf)
-                # check_box = CheckBox( r_img, pdf)
-                print('--2--')
-                # r_img = c_img
-                check_box = extract_tables(c_img, pdf)
+            check_box.extract_text()
+            check_box.generate_response()
+            print(check_box.response)
 
-
-                # for ti, table in enumerate(check_box_tables):
-                #     table_cells = table.table_cells
-                #     for ri, row in enumerate(table_cells):
-                #         for ci, col in enumerate(row):
-                #             co_ordinates = get_cordinates(col)
-                #             print('co_ordinates-------->', co_ordinates )
-                #             id = str(ti) + str(ri) + str(ci)
-                #             if co_ordinates['y'] > 400 and co_ordinates['y'] < 600 and co_ordinates['w'] > 10 and \
-                #                     co_ordinates['w'] < 30 and co_ordinates['h'] > 8:
-                #                 check_box.co_ordinates.append(CoOrdinate(id, co_ordinates, 'constitution'))
-                #                 print(f"{id} -> {co_ordinates}")
-                #             elif co_ordinates['y'] > 790 and co_ordinates['y'] < 970 and co_ordinates['w'] > 10 and \
-                #                     co_ordinates['h'] > 8:
-                #                 check_box.co_ordinates.append(CoOrdinate(id, co_ordinates, 'finance_facilities'))
-                #                 print(f"{id} -> {co_ordinates}")
-                #             else:
-                #                 pass
-
-                print('****check_box count****')
-                # print(len(check_box_tables))
-                check_box.extract_text()
-                check_box.generate_response()
-                print(check_box.response)
-            except Exception as e:
-                print("ERROR--->**->", e)
-            #====================================
-
-            # print(prediction)
             # print('-----------VISION-RESPONSE------------')
             print(gv.display())
             convert_pdf_to_text(pdf, (text_path + "page-1.txt") )
@@ -167,9 +133,7 @@ def parse_scanned_doc(page_folder_location, file_location, start_page, last_page
             tables = te.extract_tables(img, pdf,
                                        debug=False,
                                        debug_folder_path=images_path)
-            # print(f"no of table = {len(tables)}")
 
-            return True
             if len(tables) > 0:
                 # print("***15***")
                 map_table_data_to_text(tables, pdf, lang, gv, prediction)
@@ -186,7 +150,12 @@ def parse_scanned_doc(page_folder_location, file_location, start_page, last_page
                 else:
                     extract_text_for_polish(pdf, basename, html_path, lang)
 
-        
+
+    print("**********************************EXTRACTION*************************************")
+    print("prediction-->", prediction)
+    print("check_box--->", check_box)
+    print("**********************************EXTRACTION*************************************")
+    return [prediction, check_box]
 
 
 def parse_machine_generated_doc(page_folder_location, file_location, start_page, last_page, lang):
@@ -232,10 +201,11 @@ def extract_translated_data(filename, file_location, start_page, last_page=None,
             parse_machine_generated_doc(page_folder_location, file_location, start_page, last_page, lang)
         else:
             logging.info("Scanned document")
-            parse_scanned_doc(page_folder_location, file_location, start_page, last_page, lang)
+            prediction, check_box = parse_scanned_doc(page_folder_location, file_location, start_page, last_page, lang)
 
         # print("***4***")
-        return formulate_result(page_folder_location)
+        return [prediction, check_box]
+        # return formulate_result(page_folder_location)
 
     except CustomClassifierException as e:
         print("ERROR--->1", e)
